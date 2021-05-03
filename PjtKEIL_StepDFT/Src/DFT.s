@@ -1,6 +1,7 @@
 	PRESERVE8
 	THUMB   
-		
+	export DFT_ModuleAuCarre
+
 
 ; ====================== zone de réservation de données,  ======================================
 ;Section RAM (read only) :
@@ -10,7 +11,8 @@
 ;Section RAM (read write):
 	area    maram,data,readwrite
 		
-
+SommeReel dcw 0
+SommeImm dcw 0
 	
 ; ===============================================================================================
 	
@@ -21,9 +23,33 @@
 	area    moncode,code,readonly
 ; écrire le code ici		
 
+DFT_ModuleAuCarre proc
+	
+	push{r4, r5, r6, r7,r8,r9,r10}
+	ldr r2, =SommeReel ; Somme Reelle
+	mov r3, #64 ;compteur
+	ldr r5, [r1] ;Signal
+	mov r6, #0 ;n
+	ldr r8, =TabCos
 
 
+Reel
+	ldr r4, [r0] ;k
+	subs r3,#1 ;Decrementation du compteur
+	ldrsh r1, [r5, r6] ;ont met dans r1 x[n]
+	adds r6,#1 ;incremente n
+	mul r4,r6 ;p
+	mov r7,#64 ;masque pour le modulo
+	and r4,r7 ;p modulo 64, vrai p
+	ldrsh r9, [r8, r4] ;ont met dans r9 CosTab[p]
+	mul r1,r9
+	ldr r2,[r1]
+	bneq Reel
 
+	ldr r10, =SommeImm ; Somme Immaginaire
+	mov r3, #64 ;compteur
+	mov r6, #0 ;n
+	ldr r8, =TabSin
 
 ;Section ROM code (read only) :		
 	AREA Trigo, DATA, READONLY
