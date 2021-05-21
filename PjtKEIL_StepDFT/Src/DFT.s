@@ -10,9 +10,6 @@
 
 ;Section RAM (read write):
 	area    maram,data,readwrite
-		
-SommeReel dcw 0
-SommeImm dcw 0
 	
 ; ===============================================================================================
 	
@@ -25,31 +22,82 @@ SommeImm dcw 0
 
 DFT_ModuleAuCarre proc
 	
-	push{r4, r5, r6, r7,r8,r9,r10}
-	ldr r2, =SommeReel ; Somme Reelle
-	mov r3, #64 ;compteur
-	ldr r5, [r1] ;Signal
-	mov r6, #0 ;n
-	ldr r8, =TabCos
+	; Reel
+	push {r0, r1, lr}
+	bl Reel
+	mov r2,r0
+	pop{r0, r1, lr}
+	;Imaginaire
+	;push{r0, r1, r2, lr}
+	;bl Imaginaire
+	;mov r3,r0
+	;pop{r0, r1, r2, lr}
+	;Carre des partie reelle et imaginaire, 10.54
+	;smull r1, r0, r2, r2
+	;smull r2, r1, r3, r3
+	;Addition bit de poid fort pour qvoir du 10.22
+	;add r0, r1
+	mov r0,r2
+	bx lr
+	endp
+
+Reel proc
+
+	push{r4, r5, r6, r7}
+	mov r2, #0 ; Somme Reelle
+	mov r4, #0 ;n
+	ldr r5, =TabCos
+
+TantQueReel
+
+	ldrsh r6, [r0, r4,lsl #1] ;ont met dans r6 x[n]
+	mul r7,r1,r4 ;p
+	add r4,#1 ;incremente n
+	and r7,#64 ;p modulo 64, vrai p
+	ldrsh r3, [r5, r7,lsl #1] ;ont met dans r8 TabCos[p]
+	mul r3,r6 ; multiplication de x(n) et TabCos(p)
+	add r2,r3
+	cmp r4, #64
+	bne TantQueReel
+	
+FinTantQueReel
+	
+	mov r0, r2
+	pop{r4, r5, r6, r7}
+	bx lr
+	endp
+	
 
 
-Reel
-	ldr r4, [r0] ;k
-	subs r3,#1 ;Decrementation du compteur
-	ldrsh r1, [r5, r6] ;ont met dans r1 x[n]
-	adds r6,#1 ;incremente n
-	mul r4,r6 ;p
-	mov r7,#64 ;masque pour le modulo
-	and r4,r7 ;p modulo 64, vrai p
-	ldrsh r9, [r8, r4] ;ont met dans r9 CosTab[p]
-	mul r1,r9
-	ldr r2,[r1]
-	bneq Reel
 
-	ldr r10, =SommeImm ; Somme Immaginaire
-	mov r3, #64 ;compteur
-	mov r6, #0 ;n
-	ldr r8, =TabSin
+Imaginaire proc
+
+	push{r4, r5, r6, r7}
+	mov r2, #0 ; Somme Reelle
+	mov r4, #0 ;n
+	ldr r5, =TabSin
+
+TantQueImaginaire
+
+	ldrsh r6, [r0, r4,lsl #1] ;ont met dans r6 x[n]
+	mul r7,r1,r4 ;p
+	add r4,#1 ;incremente n
+	and r7,#64 ;p modulo 64, vrai p
+	ldrsh r3, [r5, r7,lsl #1] ;ont met dans r8 TabSin[p]
+	mul r3,r6 ; multiplication de x(n) et TabSin(p)
+	add r2,r3
+	cmp r4, #64
+	bne TantQueImaginaire
+	
+FinTantQueImaginaire
+	
+	mov r0, r2
+	pop{r4, r5, r6, r7}
+	bx lr
+	endp
+	
+
+	
 
 ;Section ROM code (read only) :		
 	AREA Trigo, DATA, READONLY
