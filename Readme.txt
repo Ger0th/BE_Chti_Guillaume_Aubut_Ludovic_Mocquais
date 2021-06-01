@@ -1,0 +1,1 @@
+Nous nous sommes arreter apres l'affichage le score et le son pour une cible, sur un probleme de son qui part une fois au debut.

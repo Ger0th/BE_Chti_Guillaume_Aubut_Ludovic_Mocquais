@@ -374,12 +374,22 @@
         <Ww>
           <count>1</count>
           <WinNumber>2</WinNumber>
-          <ItemText>Resu</ItemText>
+          <ItemText>Resu,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>2</WinNumber>
           <ItemText>\\StepDFT\Src/principal.c\Resu[6]</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>pointcounter,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>counter,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>

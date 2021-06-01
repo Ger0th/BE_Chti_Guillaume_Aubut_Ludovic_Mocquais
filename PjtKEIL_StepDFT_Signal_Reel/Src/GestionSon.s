@@ -4,6 +4,7 @@
 	include Driver/DriverJeuLaser.inc
 	export CallbackSon
 	export StartSon
+	export InitSon
 	import Son
 	import LongueurSon
 ; ====================== zone de réservation de données,  ======================================
@@ -23,7 +24,16 @@ Index dcd 0
 		
 ;Section ROM code (read only) :		
 	area    moncode,code,readonly
-; écrire le code ici		
+; écrire le code ici	
+
+InitSon proc
+	ldr r0, =Index
+	ldr r1, =LongueurSon
+	ldr r1, [r1]
+	str r1, [r0]
+	bx lr
+	endp
+
 StartSon proc
 	ldr r0, =Index
 	mov r1, #0
