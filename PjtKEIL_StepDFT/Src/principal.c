@@ -22,7 +22,7 @@ CLOCK_Configure();
 
 //============================================================================	
 
-for (int k=1;k<64;k++)
+for (int k=0;k<64;k++)
 		{
 			Resu[k]=DFT_ModuleAuCarre(LeSignal,k);
 		}
